@@ -245,7 +245,7 @@ router.get(
         expires: new Date(Date.now()),
         httpOnly: true,
         secure: true,
-        sameSite: none,
+        sameSite: "none",
       });
 
       res.status(200).json({
