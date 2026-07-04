@@ -1,10 +1,11 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const ErrorHandler = require("./middleware/error");
 const app = express();
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const connectDataBase = require("./db/Database");
+// const connectDataBase = require("./db/Database");
 const cloudinary = require("cloudinary");
 const path = require("path");
 
@@ -25,14 +26,15 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 // }
 
 // Database connection
-const connectDataBase = async () => {
-  try {
-    await mongoose.connect(process.env.DB_URL);
-    console.log("MongoDB Connected");
-  } catch (err) {
-    console.log(err);
-  }
+const connectDatabase = () => {
+  mongoose
+    .connect(process.env.DB_URL)
+    .then((data) => {
+      console.log(`mongodb connected with server: ${data.connection.host}`);
+    });
 };
+
+connectDatabase();
 
 
 // Cloudinary configuration
