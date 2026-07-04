@@ -6,13 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const connectDataBase = require("./db/Database");
 const cloudinary = require("cloudinary");
-
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-app.use(cookieParser());
-app.use("/test", (req, res) => {
-  res.send("Hello world!");
-});
+const path = require("path");
 
 //config
 if (process.env.NODE_ENV !== "PRODUCTION") {
@@ -20,6 +14,19 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
     path: "./config/.env",
   });
 }
+
+// import routes
+const user = require("./controller/user");
+const shop = require("./controller/shop");
+const product = require("./controller/product");
+const event = require("./controller/event");
+const coupon = require("./controller/coupounCode");
+const payment = require("./controller/payment");
+const order = require("./controller/order");
+const message = require("./controller/messages");
+const conversation = require("./controller/conversation");
+
+
 
 // Load .env only in local development
 // if (process.env.NODE_ENV !== "production") {
@@ -31,6 +38,7 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 // Database connection
 connectDataBase();
 
+
 // Cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -38,6 +46,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
   secure: true,
 });
+
 
 const allowedOrigins = [
   "http://localhost:3000",
@@ -55,6 +64,29 @@ const corsOptions = {
   credentials: true,
 };
 
+app.use(cors(corsOptions));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(cookieParser());
+app.use("/test", (req, res) => {
+  res.send("Hello world!");
+});
+// app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+
+
+// Load .env only in local development
+// if (process.env.NODE_ENV !== "production") {
+//   require("dotenv").config({
+//     path: path.resolve(__dirname, "config", ".env"),
+//   });
+// }
+
+
+
+
+
+
 // app.use(cors({
 //     origin: [
 //       "http://localhost:3000",
@@ -62,25 +94,6 @@ const corsOptions = {
 //     ],
 //     credentials : true,
 // }));
-
-app.use(cors(corsOptions));
-
-const path = require("path");
-
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
-
-
-
-// import routes
-const user = require("./controller/user");
-const shop = require("./controller/shop");
-const product = require("./controller/product");
-const event = require("./controller/event");
-const coupon = require("./controller/coupounCode");
-const payment = require("./controller/payment");
-const order = require("./controller/order");
-const message = require("./controller/messages");
-const conversation = require("./controller/conversation");
 
 app.use("/api/v2/user", user);
 app.use("/api/v2/shop", shop);
