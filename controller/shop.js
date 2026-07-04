@@ -216,24 +216,47 @@ router.get(
   }),
 );
 
+// // log out shop
+// router.get(
+//   "/logout",
+//   catchAsyncErrors(async (req, res, next) => {
+//     try {
+//       res.cookie("Shoptoken", null, {
+//         expires: new Date(Date.now()),
+//         httpOnly: true,
+//       });
+
+//       res.status(201).json({
+//         success: true,
+//         message: "Log out Successfull",
+//       });
+//     } catch (error) {
+//       return next(new ErrorHandler(error.message, 500));
+//     }
+//   }),
+// );
+
 // log out shop
 router.get(
   "/logout",
   catchAsyncErrors(async (req, res, next) => {
     try {
-      res.cookie("Shoptoken", null, {
+      res.cookie("seller_token", null, {
         expires: new Date(Date.now()),
         httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite:
+          process.env.NODE_ENV === "production" ? "none" : "lax",
       });
 
-      res.status(201).json({
+      res.status(200).json({
         success: true,
-        message: "Log out Successfull",
+        message: "Logout Successful",
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  }),
+  })
 );
 
 // get shop info
