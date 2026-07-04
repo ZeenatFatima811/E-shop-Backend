@@ -93,7 +93,7 @@ router.post(
 
       const activationToken = createActivationToken(seller);
 
-      const activationUrl = `https://e-shop-frontend-six.vercel.app/${activationToken}`;
+      const activationUrl = `https://e-shop-frontend-six.vercel.app/activation/${activationToken}`;
 
       try {
         await sendMail({
@@ -244,9 +244,8 @@ router.get(
       res.cookie("seller_token", null, {
         expires: new Date(Date.now()),
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite:
-          process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: true,
+        sameSite: none,
       });
 
       res.status(200).json({

@@ -58,7 +58,6 @@ const cloudinary = require("cloudinary");
 
 // create activation token
 
-
 router.post("/create-user", async (req, res, next) => {
   try {
     const { name, email, password, avatar } = req.body;
@@ -84,7 +83,7 @@ router.post("/create-user", async (req, res, next) => {
 
     const activationToken = createActivationToken(user);
 
-    const activationUrl = `https://e-shop-frontend-six.vercel.app/${activationToken}`;
+    const activationUrl = `https://e-shop-frontend-six.vercel.app/activation/${activationToken}`;
 
     try {
       await sendMail({
@@ -103,7 +102,6 @@ router.post("/create-user", async (req, res, next) => {
     return next(new ErrorHandler(error.message, 400));
   }
 });
-
 
 const createActivationToken = (user) => {
   return jwt.sign(user, process.env.ACTIVATION_SECRET, {
@@ -201,23 +199,40 @@ router.get(
 );
 
 // log out user
+// router.get(
+//   "/logout",
+//   isAuthenticated,
+//   catchAsyncErrors(async (req, res, next) => {
+//     try {
+//       res.cookie("token", null, {
+//         expires: new Date(Date.now()),
+//         httpOnly: true,
+//       });
+
+//       res.status(201).json({
+//         success: true,
+//         message: "Log out Successfull",
+//       });
+//     } catch (error) {
+//       return next(new ErrorHandler(error.message, 500));
+//     }
+//   }),
+// );
+
 router.get(
   "/logout",
   isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
-    try {
-      res.cookie("token", null, {
-        expires: new Date(Date.now()),
-        httpOnly: true,
-      });
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: none,
+    });
 
-      res.status(201).json({
-        success: true,
-        message: "Log out Successfull",
-      });
-    } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
-    }
+    res.status(200).json({
+      success: true,
+      message: "Logout Successful",
+    });
   }),
 );
 
@@ -287,7 +302,6 @@ router.put(
 //   }),
 // );
 
-
 router.put(
   "/update-avatar",
   isAuthenticated,
@@ -319,9 +333,8 @@ router.put(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
-  })
+  }),
 );
-
 
 router.put(
   "/update-user-addresses",
@@ -436,16 +449,19 @@ router.put(
 );
 
 // find user information with the userId
-router.get("/user-info/:id" , catchAsyncErrors(async(req, res, next)=>{
-  try {
-    const user= await User.findById(req.params.id);
-    res.status(201).json({
-      success: true,
-      user
-    })
-  } catch (error) {
-    return next(new ErrorHandler(error.message, 500));
-  }
-}))
+router.get(
+  "/user-info/:id",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const user = await User.findById(req.params.id);
+      res.status(201).json({
+        success: true,
+        user,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  }),
+);
 
 module.exports = router;
