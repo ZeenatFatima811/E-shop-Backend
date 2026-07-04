@@ -1,0 +1,33 @@
+# dependencies
+node_modules
+
+# env files
+config/.env
+.env
+.env.local
+.env.production
+
+# logs
+logs
+*.log
+npm-debug.log*
+
+# runtime files
+pids
+*.pid
+*.seed
+
+# coverage
+coverage
+
+# build (if using babel/ts later)
+dist
+build
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# uploads (important if you store images locally)
+uploads
+public/uploads
